@@ -3,17 +3,29 @@ html body{
   height: 100%;
   width: 100%;
   color: rgba(232, 230, 227, 0.87);
+  border-color: rgba(232, 230, 227, 0.87);
+}
+
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  /* color: #2c3e50; */
+  /* color: white; */
 }
 
 .jumbotron {
   background: rgb(24, 26, 27);
 }
-
+form h4 {
+  text-align: center;
+}
 form{
   position: relative ;
   height: 20vh;
   top: 20%;
-  border: 4px dashed white;
+  border: 4px dashed;
 }
 
 form p{
@@ -52,7 +64,7 @@ object {
   width: 50%; 
   height: 70vh;
   float: left;
-  border-right: 1px solid white;
+  border-right: 1px solid;
 } 
 
 #metadata {
