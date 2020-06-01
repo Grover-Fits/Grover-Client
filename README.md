@@ -9,15 +9,17 @@ Grover allows you to visualize your fits image files as well as provide the meta
 ***
 **STARTING THE CLIENT**
 ***
-**Make sure you have golang >v1.14**  
 
-**Using python webserver(for development / testing)**
+**Using express webserver(for development / testing)**
 ```bash
-    make start
+    make start-dev
 ```
 
 **Using production webserver(nginx, apache, caddy, etc)**
-* clone repo into webroot
+```bash
+    make build
+```
+* place dist folder in accessible location for your reverse proxy
 * update *.conf files needed to show client in browser
 
 You can access the site from http://localhost:8085

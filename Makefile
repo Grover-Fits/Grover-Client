@@ -8,11 +8,15 @@ PURPLE = \033[0;35m
 GREEN  = \033[0;32m
 LINE   = $(PURPLE)-------------------------------------------------------------------------------------------------$(RESET)
 
-start: ## start client
-	python2 -m SimpleHTTPServer 8085 & echo $$! > $(CLIENT_PID);
+start-dev: ## start client
+	cd grover && npm run dev
 
-stop: ## stop client
-	kill `cat $(CLIENT_PID)` && rm -rf $(CLIENT_PID)
+
+build-production: ## build grover for production
+	cd grover && npm run build
+
+#stop:
+	cd grover && npm stop
 
 help: ## That's me!
 	@echo
