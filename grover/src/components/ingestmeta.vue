@@ -112,7 +112,9 @@
                     let body = `{"filePath": "`;
                     let imgStr = '';
                     for (let i = 0; i < this.ingestedFiles.length; i++) {
-                        imgStr = imgStr + this.ingestedFiles[i].Images[0] + " "
+                        for (let j = 0; j < this.ingestedFiles[i].Images.length; j++) {
+                            imgStr = imgStr + this.ingestedFiles[i].Images[j] + " "
+                        }
                     }
                     imgStr = imgStr.replace(/['"]+/g, '');
                     body = body + imgStr + '"}'
