@@ -99,7 +99,7 @@
                            "Content-Type" : "application/json",
                         }
                     }
-                    let resp = await axios.post('http://localhost:8081/api/fits/upload', body, config);
+                    let resp = await axios.post('http://localhost/api/fits/upload', body, config);
                     let {metadata} = resp.data
                     let details = JSON.parse(metadata);
                     console.log("DETAILS: ", details.Images[0]);

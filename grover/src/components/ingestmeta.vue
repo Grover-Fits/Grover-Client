@@ -148,7 +148,7 @@
                            "Content-Type" : "application/json",
                         }
                     }
-                    let resp = await axios.post('http://localhost:8081/api/fits/mosaic', body, config);
+                    let resp = await axios.post('http://localhost/api/fits/mosaic', body, config);
                     console.log("Received response:", resp)
                     this.currentMosStatus = STATUS_MOSAIC_DONE;
                     this.mosaicDownloadLocation = resp.data.mosLoc
