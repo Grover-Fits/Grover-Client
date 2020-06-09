@@ -1,6 +1,6 @@
 <template>
 <div id="meta-content" v-if="ingestedFiles.length > 0">
-    <md-button v-if="this.showMeta" class="md-fab md-mini md-primary" @click="this.flipVisibleMeta">
+    <md-button v-if="this.showMeta" class="md-fab md-mini md-primary metaBtn" @click="this.flipVisibleMeta">
         <md-icon v-if="!metaVisible">visibility</md-icon>
         <md-icon v-if="metaVisible">visibility_off</md-icon>
     </md-button>
@@ -18,24 +18,43 @@
     <div id="showingMeta" v-if="this.metaVisible">
     </div>
     <div>
-    <md-button v-if="isAvailable" class="md-raised md-primary" @click="generateMovie">
-            Generate Movie
+    <!--<md-button v-if="isMosAvailable" class="md-raised md-primary mosaicBtn" @click="generateMosaic"> -->
+    <md-button v-if="isMosAvailable || isAvailable || isDone || isMosDone" class="md-raised md-primary mosaicBtn" @click="showDialog = true">
+            Generate Outputs
     </md-button>
-    <md-progress-spinner v-if="isCreating" md-mode="indeterminate" :md-diameter="30" :md-stroke="3" class="metaLoading"></md-progress-spinner>
-    <a id="downloadBtn" v-bind:href="this.movieDownloadLocation" target="_blank" v-if="isDone">
-        <md-button class="md-raised md-primary">
-            <md-icon>cloud_download</md-icon>
-        </md-button>
-    </a>
-    <md-button v-if="isMosAvailable" class="md-raised md-primary mosaicBtn" @click="generateMosaic">
+    <md-dialog :md-active.sync="showDialog">
+        <md-dialog-title>
             Generate Mosaic
-    </md-button>
-    <md-progress-spinner v-if="isMosCreating" md-mode="indeterminate" :md-diameter="30" :md-stroke="3" class="metaSpinner"></md-progress-spinner>
-    <a class="mosaicBtn" v-bind:href="this.mosaicDownloadLocation" target="_blank" v-if="isMosDone">
-        <md-button class="md-raised md-primary">
-            <md-icon>cloud_download</md-icon>
+            <md-button v-if="isDone || isMosDone" class="md-fab md-mini md-primary refreshBtn" @click="updateAvailable">
+                <md-icon>refresh</md-icon>
+            </md-button>
+        </md-dialog-title>
+        <md-dialog-content>
+        <md-table v-model="allImages" md-sort="name" md-sort-order="asc" @md-selected="onSelect" md-card>
+                <md-table-row slot="md-table-row" slot-scope="{ item }" md-selectable="multiple" md-auto-select>
+                    <md-table-cell md-label="Image" md-sort-by="name">{{item.name}}<img v-bind:src="item.name" id="imgPreview"/></md-table-cell>
+                </md-table-row>
+        </md-table>
+        <md-button v-if="isAvailable" class="md-raised md-primary" @click="generateMovie">
+            Generate Movie
         </md-button>
-    </a>
+        <md-button v-if="isMosAvailable" class="md-raised md-primary mosaicBtn" @click="generateMosaic">
+            Generate Mosaic
+        </md-button>
+        <md-progress-spinner v-if="isCreating" md-mode="indeterminate" :md-diameter="30" :md-stroke="3" class="metaLoading"></md-progress-spinner>
+        <a id="downloadBtn" v-bind:href="this.movieDownloadLocation" target="_blank" v-if="isDone">
+            <md-button class="md-raised md-primary">
+                <md-icon>cloud_download</md-icon>
+            </md-button>
+        </a>
+        <md-progress-spinner v-if="isMosCreating" md-mode="indeterminate" :md-diameter="30" :md-stroke="3" class="metaSpinner"></md-progress-spinner>
+        <a class="mosaicBtn" v-bind:href="this.mosaicDownloadLocation" target="_blank" v-if="isMosDone">
+            <md-button class="md-raised md-primary">
+                <md-icon>cloud_download</md-icon>
+            </md-button>
+        </a>
+        </md-dialog-content>
+    </md-dialog>
     <!-- <md-button class="md-raised md-primary uploadBtn" @click="renderDialog">
             Upload more files
     </md-button> -->
@@ -54,6 +73,9 @@
         name: 'ingestmeta',
         data () {
             return {
+                selected: [],
+                mosaicOrder: [],
+                allImages: [],
                 currentStatus: null,
                 currentMosStatus: null,
                 currentMeta: null,
@@ -76,15 +98,20 @@
                 immediate: true,
                 handler(val) {
                     console.log("NEW VAL FOUND!", val)
+                    this.allImages = [];
                     let count = 0;
                     for (let i = 0; i < val.length; i++) {
                         count += val[i].Images.length
+                        for (let j = 0; j < val[i].Images.length; j++) {
+                            this.allImages.push({"name": val[i].Images[j]});
+                        }
                     }
 
                     if (count > 1) {
                         this.currentStatus = STATUS_MOVIE_AVAIL;
                         this.currentMosStatus = STATUS_MOSAIC_AVIL;
                         console.log("ENOUGH IMAGES FOUND!")
+                        console.log("allimages:", this.allImages)
                     }
                     if (val.length >= 1) {
                         this.showMeta = true
@@ -125,20 +152,23 @@
                 this.currentMosStatus = STATUS_INITIAL;
         },
         methods: {
-            // renderDialog() {
-            //     this.$emit('showDialog', true)
-            // },
+            onSelect (items) {
+                this.selected = items
+            },
+            updateAvailable() {
+                this.currentStatus = STATUS_MOVIE_AVAIL 
+                this.currentMosStatus = STATUS_MOSAIC_AVIL
+            },
             async generateMosaic() {
+                console.log("selected values for mosaic:", this.selected)
                 this.currentMosStatus = STATUS_MOSAIC_CREATING;
                 try {
                     let count = 0;
                     let body = `{"filePath": "`;
                     let imgStr = '';
-                    for (let i = 0; i < this.ingestedFiles.length; i++) {
-                        for (let j = 0; j < this.ingestedFiles[i].Images.length; j++) {
-                            imgStr = imgStr + this.ingestedFiles[i].Images[j] + " "
-                            count ++;
-                        }
+                    for (let i = 0; i < this.selected.length; i++) {
+                        imgStr = imgStr + this.selected[i].name + " "
+                        count ++;
                     }
                     console.log(count)
                     imgStr = imgStr.replace(/['"]+/g, '');
@@ -161,10 +191,8 @@
                 try {
                     let body = `{"filePath": "`;
                     let imgStr = '';
-                    for (let i = 0; i < this.ingestedFiles.length; i++) {
-                        for (let j = 0; j < this.ingestedFiles[i].Images.length; j++) {
-                            imgStr = imgStr + this.ingestedFiles[i].Images[j] + " "
-                        }
+                    for (let i = 0; i < this.selected.length; i++) {
+                        imgStr = imgStr + this.selected[i].name + " "
                     }
                     imgStr = imgStr.replace(/['"]+/g, '');
                     body = body + imgStr + '"}'
@@ -173,7 +201,7 @@
                            "Content-Type" : "application/json",
                         }
                     }
-                    let resp = await axios.post('http://localhost:8081/api/fits/movie', body, config);
+                    let resp = await axios.post('http://localhost/api/fits/movie', body, config);
                     console.log("Received response:", resp)
                     this.currentStatus = STATUS_MOVIE_DONE
                     this.movieDownloadLocation = resp.data.movLoc

@@ -150,10 +150,14 @@ img {
   top: 0.3em;
 }
 
-.md-fab  {
+.metaBtn  {
   position: absolute  !important;
   left: 24%;
   top: 45%;
+}
+
+.refreshBtn {
+  float: right;
 }
 
 .uploadBtn {
@@ -165,6 +169,16 @@ img {
 }
 .mosaicBtn {
   float: right;
+}
+
+#imgPreview {
+  height: 5vh;
+  width: auto;
+  margin-left: 5em;
+}
+
+#reorderBtn {
+  margin: 0;
 }
 
 object {
