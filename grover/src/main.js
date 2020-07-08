@@ -9,14 +9,3 @@ Vue.use(VueMaterial)
 new Vue({
   render: h => h(App),
 }).$mount('#app')
-
-// const vm = new Vue({
-//   el: '#app',
-//   data: {
-//     results: []
-//   },
-//   readFile() {
-//     axios.get("https://api.nytimes.com/svc/topstories/v2/home.json?api-key=your_api_key")
-//     .then(response => {this.results = response.data.results})
-//   }
-// });

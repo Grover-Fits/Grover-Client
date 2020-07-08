@@ -13,7 +13,7 @@ start-dev: ## start client
 
 
 build-production: ## build grover for production
-	cd grover && npm run build 
+	cd grover && npm install && npm run build 
 	mkdir -p grover/dist/images/meta grover/dist/videos
 
 help: ## That's me!

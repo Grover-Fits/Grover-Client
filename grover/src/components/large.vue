@@ -67,6 +67,10 @@
                     
                     reader.onload = (evt) => {
                         let res = evt.target.result;
+                        if (file.size > 1024 * (20 * 1024)) {
+                            alert('File Size Too Big! >20MB');
+                            return;
+                        }
                         this.sendFile(res, file.name);
                         console.log("Found File:", file.name);
                     };
@@ -99,7 +103,7 @@
                            "Content-Type" : "application/json",
                         }
                     }
-                    let resp = await axios.post('http://localhost/api/fits/upload', body, config);
+                    let resp = await axios.post('http://localhost:8080/api/fits/upload', body, config);
                     let {metadata} = resp.data
                     let details = JSON.parse(metadata);
                     console.log("DETAILS: ", details.Images[0]);

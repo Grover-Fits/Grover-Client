@@ -178,7 +178,7 @@
                            "Content-Type" : "application/json",
                         }
                     }
-                    let resp = await axios.post('http://localhost/api/fits/mosaic', body, config);
+                    let resp = await axios.post('http://localhost:8080/api/fits/mosaic', body, config);
                     console.log("Received response:", resp)
                     this.currentMosStatus = STATUS_MOSAIC_DONE;
                     this.mosaicDownloadLocation = resp.data.mosLoc
@@ -201,7 +201,7 @@
                            "Content-Type" : "application/json",
                         }
                     }
-                    let resp = await axios.post('http://localhost/api/fits/movie', body, config);
+                    let resp = await axios.post('http://localhost:8080/api/fits/movie', body, config);
                     console.log("Received response:", resp)
                     this.currentStatus = STATUS_MOVIE_DONE
                     this.movieDownloadLocation = resp.data.movLoc
